@@ -1,0 +1,8 @@
+{
+    "name": "Version Tag Workflow",
+    "description": "Tag commit with new version CI workflow template.",
+    "iconName": "example-icon",
+    "categories": [
+        "Go"
+    ]
+}

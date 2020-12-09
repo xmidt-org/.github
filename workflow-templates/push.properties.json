@@ -1,0 +1,8 @@
+{
+    "name": "CI General Workflow",
+    "description": "General checks to run on commits and PRs CI workflow template.",
+    "iconName": "example-icon",
+    "categories": [
+        "Go"
+    ]
+}
