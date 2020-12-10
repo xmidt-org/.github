@@ -1,0 +1,11 @@
+{
+    "name": "Docker Release Workflow",
+    "description": "Create a new Docker Hub release CI workflow template.",
+    "iconName": "upload",
+    "categories": [
+        "Go"
+    ],
+    "filePatterns": [
+        "^Dockerfile"
+    ]
+}
