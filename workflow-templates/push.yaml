@@ -23,7 +23,7 @@ jobs:
 
       # Run build of the application
       - name: Run build
-        run: go build .
+        run: go build ./...
 
       # Run gofmt on the code
       - name: Run gofmt
@@ -35,6 +35,7 @@ jobs:
           go test -v -race -coverprofile=coverage.txt ./...
           go test -race -json ./... > report.json
           curl -s https://codecov.io/bash | bash
+          echo "codecov done"
 
   lint:
     strategy:
@@ -49,7 +50,7 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
-          version: v1.29
+          version: v1.33
           # Optional: working directory, useful for monorepos
           # working-directory: somedir
 
