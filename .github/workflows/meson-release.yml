@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: 2021 Comcast Cable Communications Management, LLC
+# SPDX-License-Identifier: Apache-2.0
+
+name: release
+
+on:
+  workflow_call:
+    inputs:
+      meson-provides:
+        description: 'The package being provided.'
+        type: string
+        default: 'none'
+    secrets:
+      token:
+        description: 'The GITHUB_TOKEN.'
+
+jobs:
+  release:
+    runs-on: [ ubuntu-latest ]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate Release Bundle
+        id: bundle
+        uses: xmidt-org/release-builder-action@v2
+        with:
+          gh-token: ${{ secrets.TOKEN }}
+          meson-provides: ${{ inputs.meson-provides }}
+
+      - name: Upload Release
+        uses: ncipollo/release-action@v1
+        with:
+          name: ${{ steps.bundle.outputs.release-name }}
+          tag: ${{ steps.bundle.outputs.release-tag }}
+          draft: false
+          prerelease: false
+          bodyFile: ${{ steps.bundle.outputs.release-body-file }}
+          artifacts: "${{ steps.bundle.outputs.artifact-dir }}/*"
+          token: ${{ secrets.TOKEN }}
