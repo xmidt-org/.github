@@ -13,9 +13,6 @@ on:
       sonar_login:
         description: 'The sonarcloud login token.'
         required: true
-      token:
-        description: 'The GITHUB_TOKEN.'
-        required: true
 
 jobs:
   test:
@@ -72,8 +69,6 @@ jobs:
           build/sonar-scanner/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io \
                                                 -Dproject.settings=.sonar-project.properties \
                                                 -Dsonar.login=${{ secrets.sonar_login }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.token }}
 
       - name: Upload Codecov.io
         uses: codecov/codecov-action@v2
