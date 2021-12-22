@@ -92,10 +92,11 @@ jobs:
         working-directory: build
         env:
           COVERITY_SECRET: ${{ secrets.coverity_key }}
+          SLUG: ${{ inputs.repo }}
         run: |
           curl --form token=$COVERITY_SECRET \
                --form email=${{ inputs.email }} \
                --form file=@coverity.tgz \
                --form version="${{ inputs.sha }}" \
                --form description="`date`" \
-               "https://scan.coverity.com/builds?project=${{ inputs.repo }}//\//\%2F}"
+               "https://scan.coverity.com/builds?project=${SLUG//\//\%2F}"
