@@ -25,9 +25,6 @@ on:
       coverity_key:
         description: 'The Coverity key.'
         required: true
-      token:
-        description: 'The GITHUB_TOKEN.'
-        required: true
 
 jobs:
   coverity:
