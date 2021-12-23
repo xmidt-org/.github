@@ -9,12 +9,6 @@ on:
       packages:
         description: 'The optional list of ubuntu packages to install prior to building.'
         type: string
-      extra-setup:
-        description: 'The optional bash command to run if extra setup is needed.'
-        type: string
-      extra-checks:
-        description: 'The optional list of ninja targets to call after running tests and before collecting the results.'
-        type: string
     secrets:
       sonar_login:
         description: 'The sonarcloud login token.'
@@ -47,11 +41,6 @@ jobs:
       - name: Meson Setup
         run: |
           meson setup --warnlevel 3 --werror build
-
-      - name: Extra Setup
-        if: ${{ inputs.extra-setup }}
-        run: |
-          ${{ inputs.extra-setup }}
 
       - name: Get Sonarcloud Binaries
         uses: xmidt-org/sonarcloud-installer-action@v1
@@ -95,12 +84,6 @@ jobs:
         working-directory: build
         run: |
           ninja test
-
-      - name: Collect/Validate Additional Results
-        working-directory: build
-        if: ${{ inputs.extra-checks }}
-        run: |
-          ninja ${{ inputs.extra-checks }}
 
       - name: Generate Coverage Report
         working-directory: build
