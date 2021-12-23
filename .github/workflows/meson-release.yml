@@ -10,9 +10,6 @@ on:
         description: 'The package being provided.'
         type: string
         default: 'none'
-    secrets:
-      token:
-        description: 'The GITHUB_TOKEN.'
 
 jobs:
   release:
@@ -24,7 +21,7 @@ jobs:
         id: bundle
         uses: xmidt-org/release-builder-action@v2
         with:
-          gh-token: ${{ secrets.TOKEN }}
+          gh-token: ${{ github.token }}
           meson-provides: ${{ inputs.meson-provides }}
 
       - name: Upload Release
@@ -36,4 +33,4 @@ jobs:
           prerelease: false
           bodyFile: ${{ steps.bundle.outputs.release-body-file }}
           artifacts: "${{ steps.bundle.outputs.artifact-dir }}/*"
-          token: ${{ secrets.TOKEN }}
+          token: ${{ github.token }}
