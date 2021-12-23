@@ -9,6 +9,9 @@ on:
       packages:
         description: 'The optional list of ubuntu packages to install prior to building.'
         type: string
+      extra-checks:
+        description: 'The optional list of ninja targets to call after running tests and before collecting the results.'
+        type: string
     secrets:
       sonar_login:
         description: 'The sonarcloud login token.'
@@ -74,8 +77,6 @@ jobs:
           echo "sonar.cfamily.threads=2"                                 >> .sonar-project.properties
           echo "sonar.cfamily.cache.enabled=false"                       >> .sonar-project.properties
           echo "sonar.coverageReportPaths=build/sonarqube.xml"           >> .sonar-project.properties
-          echo "\nresulting file:"
-          cat .sonar-project.properties
 
       - name: Build
         working-directory: build
@@ -87,12 +88,16 @@ jobs:
         run: |
           ninja test
 
+      - name: Collect/Validate Additional Results
+        working-directory: build
+        if: ${{ inputs.extra-checks }}
+        run: |
+          ninja ${{ inputs.extra-checks }}
+
       - name: Generate Coverage Report
         working-directory: build
         run: |
-          ninja coverage
-          #ninja coverage-sonarqube ## for now this isn't supported
-          gcovr --sonarqube sonarqube.xml -r ..
+          ninja coverage-sonarqube
 
       - name: Upload SonarCloud
         run: |
