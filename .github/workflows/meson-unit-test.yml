@@ -97,7 +97,7 @@ jobs:
       - name: Generate Coverage Report
         working-directory: build
         run: |
-          ninja coverage-sonarqube
+          ninja coverage
 
       - name: Upload SonarCloud
         run: |
