@@ -73,10 +73,10 @@ jobs:
           sed -i 's/.*sonar.coverageReportPaths.*//g'          .sonar-project.properties
 
           # Add the version we need.
-          echo "sonar.cfamily.build-wrapper-output=build/bw-output"      >> .sonar-project.properties
-          echo "sonar.cfamily.threads=2"                                 >> .sonar-project.properties
-          echo "sonar.cfamily.cache.enabled=false"                       >> .sonar-project.properties
-          echo "sonar.coverageReportPaths=build/sonarqube.xml"           >> .sonar-project.properties
+          echo "sonar.cfamily.build-wrapper-output=build/bw-output"       >> .sonar-project.properties
+          echo "sonar.cfamily.threads=2"                                  >> .sonar-project.properties
+          echo "sonar.cfamily.cache.enabled=false"                        >> .sonar-project.properties
+          echo "sonar.coverageReportPaths=build/meson-logs/sonarqube.xml" >> .sonar-project.properties
 
       - name: Build
         working-directory: build
