@@ -12,6 +12,8 @@ jobs:
     runs-on: [ ubuntu-latest ]
 
     steps:
+      - uses: actions/checkout@v2
+
       - name: Install colordiff
         run: |
           sudo apt-get -y install colordiff
@@ -31,7 +33,6 @@ jobs:
             echo "Using the repo code format."
           fi
 
-      - uses: actions/checkout@v2
       - uses: DoozyX/clang-format-lint-action@v0.13
         with:
           clangFormatVersion: 13
