@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2021 Comcast Cable Communications Management, LLC
+# SPDX-FileCopyrightText: 2021-2022 Comcast Cable Communications Management, LLC
 # SPDX-License-Identifier: Apache-2.0
 
 name: Code Style Check
@@ -12,7 +12,26 @@ jobs:
     runs-on: [ ubuntu-latest ]
 
     steps:
+      - name: Install colordiff
+        run: |
+          sudo apt-get -y install colordiff
+
+      - name: Get org .clang-format file
+        run: |
+          curl -s https://raw.githubusercontent.com/xmidt-org/.github/main/.clang-format > .clang-format-org
+
+      - name: Compare repo & org .clang-format files
+        run: |
+          diff -q .clang-format .clang-format-org
+          if (( 0 == $? )); then
+            echo "Local code format matches org code format."
+          else
+            echo "Repo code format differs from org code format:"
+            colordiff -u .clang-format-org .clang-format
+            echo "Using the repo code format."
+          fi
+
       - uses: actions/checkout@v2
       - uses: DoozyX/clang-format-lint-action@v0.13
         with:
-          clangFormatVersion: 12
+          clangFormatVersion: 13
