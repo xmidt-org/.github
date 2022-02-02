@@ -23,7 +23,7 @@ jobs:
 
       - name: Install packages
         run: |
-          brew install cunit ${{ inputs.packages }}
+          brew install cunit ninja ${{ inputs.packages }}
 
       - name: Install Meson
         run: |
