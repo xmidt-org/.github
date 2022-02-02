@@ -43,9 +43,43 @@ jobs:
         run: |
           ninja test
 
+  test-linux-clang:
+    name: Unit Tests (Linux clang)
+    runs-on: [ ubuntu-latest ]
+    steps:
+      - uses: actions/checkout@v2
 
-  test-linux:
-    name: Unit Tests (Linux)
+      - name: Update packages
+        run: |
+          sudo apt update
+
+      - name: Install packages
+        run: |
+          sudo apt-get -y install python3 python3-pip python3-setuptools python3-wheel \
+                                  ninja-build valgrind gcovr \
+                                  libcunit1 libcunit1-doc libcunit1-dev \
+                                  ${{ inputs.packages }}
+
+      - name: Install Meson
+        run: |
+          pip3 install --user 'meson>=0.60.3'
+
+      - name: Meson Setup
+        run: |
+          CC=clang meson setup --warnlevel 3 --werror build
+
+      - name: Build
+        working-directory: build
+        run: |
+          ninja all
+
+      - name: Run Tests
+        working-directory: build
+        run: |
+          ninja test
+
+  test-linux-gcc:
+    name: Unit Tests (Linux gcc)
     runs-on: [ ubuntu-latest ]
     steps:
       - uses: actions/checkout@v2
