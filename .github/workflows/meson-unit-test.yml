@@ -9,6 +9,11 @@ on:
       packages:
         description: 'The optional list of ubuntu packages to install prior to building.'
         type: string
+        required: false
+      brew-packages:
+        description: 'The optional list of brew (MacOS) packages to install prior to building.'
+        type: string
+        required: false
     secrets:
       sonar_login:
         description: 'The sonarcloud login token.'
@@ -23,7 +28,7 @@ jobs:
 
       - name: Install packages
         run: |
-          brew install cunit ninja ${{ inputs.packages }}
+          brew install cunit ninja ${{ inputs.brew-packages }}
 
       - name: Install Meson
         run: |
