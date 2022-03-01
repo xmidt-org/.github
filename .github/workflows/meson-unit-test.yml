@@ -10,6 +10,10 @@ on:
         description: 'The optional list of ubuntu packages to install prior to building.'
         type: string
         required: false
+      brew-extra:
+        description: 'The optional list of environment variables needed to find the brew packages when meson looks.'
+        type: string
+        required: false
       brew-packages:
         description: 'The optional list of brew (MacOS) packages to install prior to building.'
         type: string
@@ -36,7 +40,7 @@ jobs:
 
       - name: Meson Setup
         run: |
-          meson setup --warnlevel 3 --werror build
+          ${{ inputs.brew-extra }} meson setup --warnlevel 3 --werror build
 
       - name: Build
         working-directory: build
