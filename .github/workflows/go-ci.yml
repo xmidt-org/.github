@@ -1,0 +1,608 @@
+# SPDX-FileCopyrightText: 2022 Comcast Cable Communications Management, LLC
+# SPDX-License-Identifier: Apache-2.0
+---
+name: '~go-template'
+
+on:
+  workflow_call:
+    inputs:
+
+      # General or common inputs.  These cross cut concerns generally and shouldn't
+      # be included in the more targetted sections below.
+
+      go-version:
+        description: "The go version to use.  Example: '1.18.x'"
+        required: false
+        type: string
+        default: '1.18.x'
+      working-directory:
+        description: 'The working directory for this project.'
+        required: false
+        type: string
+        default: .
+
+      # Alphabetize the sections & prefix the names of the sections to the
+      # parameters associated, so maintenance and discovery is easier.
+
+      # Build focused
+      build-skip:
+        description: 'Skip building the program.'
+        required: false
+        type: boolean
+        default: false
+
+      # Lint focused
+      lint-skip:
+        description: 'Skip running the lint check.'
+        required: false
+        type: boolean
+        default: false
+      lint-timeout:
+        description: 'The timeout to pass on to the linter.'
+        required: false
+        type: string
+        default: '5m'
+      lint-version:
+        description: 'The working directory for this project.'
+        required: false
+        type: string
+        default: 'v1.42.1'
+
+      # License focused
+      license-skip:
+        description: 'Skip building the license check.'
+        required: false
+        type: boolean
+        default: false
+
+      # Release focused
+      release-branches:
+        description: 'The only branches that will trigger a release.'
+        required: false
+        type: string
+        default: main
+
+      # Style/code format focused
+      style-skip:
+        description: 'Skip building the gofmt check.'
+        required: false
+        type: boolean
+        default: false
+
+      # Unit test focused
+      tests-race:
+        description: 'If set to "true" (default), race condition checking will be performed during unit tests.  Otherwise no race condition checking will be done.'
+        required: false
+        type: boolean
+        default: true
+      tests-skip:
+        description: 'Skip running the unit tests.'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  WORKFLOW_VERSION: "1.0.1"
+
+jobs:
+
+
+  build_program:
+    runs-on: [ ubuntu-latest ]
+    if: inputs.build-skip == false
+    name: Build Go Program
+    steps:
+      - name: Job Environment Information
+        uses: hmarr/debug-action@v2
+
+      - name: Job Context Information
+        shell: bash
+        run: |
+          echo -e "\e[1;31mjob Context\e[0m"
+          echo $JOB_JSON | jq '.'
+          echo -e "\e[1;31msteps Context\e[0m"
+          echo $STEPS_JSON | jq '.'
+          echo -e "\e[1;31mrunner Context\e[0m"
+          echo $RUNNER_JSON | jq '.'
+          echo -e "\e[1;31mstrategy Context\e[0m"
+          echo $STRATEGY_JSON | jq '.'
+          echo -e "\e[1;31mmatrix Context\e[0m"
+          echo $MATRIX_JSON | jq '.'
+          echo -e "\e[1;31msecrets Context\e[0m"
+          echo '${{ toJSON(secrets) }}' | jq -r 'keys[]'
+          echo -e "\e[1;31mgithub Context\e[0m"
+          echo $GITHUB_JSON | jq '.'
+        env:
+          JOB_JSON:      ${{ toJSON(job)      }}
+          STEPS_JSON:    ${{ toJSON(steps)    }}
+          RUNNER_JSON:   ${{ toJSON(runner)   }}
+          STRATEGY_JSON: ${{ toJSON(strategy) }}
+          MATRIX_JSON:   ${{ toJSON(matrix)   }}
+          GITHUB_JSON:   ${{ toJSON(github)   }}
+
+      - name: Setup go version
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ inputs.go-version }}
+
+      # --vvv-- Cache Setup & Checkout --vvv--
+      - name: Setup go cache paths
+        id: go-cache-paths
+        run: |
+          echo "::set-output name=go-build::$(go env GOCACHE)"
+          echo "::set-output name=go-mod::$(go env GOMODCACHE)"
+
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      # For private repo use, add credentials for git here, like this:
+
+      #- name: Add credentials for git
+      #  run: |
+      #    git config --global url."https://${{ secrets.REPO_FETCHING_TOKEN }}:x-oauth-basic@github.com".insteadOf "https://github.com"
+
+      - name: Go Build Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-build }}
+          key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
+
+      - name: Go Mod Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-mod }}
+          key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum') }}
+      # --^^^-- Cache Setup & Checkout --^^^--
+
+      # Run build of the application
+      - name: Run build
+        working-directory: ${{ inputs.working-directory }}
+        run: go build ./...
+
+
+
+  unit_test:
+    runs-on: [ ubuntu-latest ]
+    name: Go Unit Tests
+    if: inputs.tests-skip == false
+    steps:
+      - name: Job Environment Information
+        uses: hmarr/debug-action@v2
+
+      - name: Job Context Information
+        shell: bash
+        run: |
+          echo -e "\e[1;31mjob Context\e[0m"
+          echo $JOB_JSON | jq '.'
+          echo -e "\e[1;31msteps Context\e[0m"
+          echo $STEPS_JSON | jq '.'
+          echo -e "\e[1;31mrunner Context\e[0m"
+          echo $RUNNER_JSON | jq '.'
+          echo -e "\e[1;31mstrategy Context\e[0m"
+          echo $STRATEGY_JSON | jq '.'
+          echo -e "\e[1;31mmatrix Context\e[0m"
+          echo $MATRIX_JSON | jq '.'
+          echo -e "\e[1;31msecrets Context\e[0m"
+          echo '${{ toJSON(secrets) }}' | jq -r 'keys[]'
+          echo -e "\e[1;31mgithub Context\e[0m"
+          echo $GITHUB_JSON | jq '.'
+        env:
+          JOB_JSON:      ${{ toJSON(job)      }}
+          STEPS_JSON:    ${{ toJSON(steps)    }}
+          RUNNER_JSON:   ${{ toJSON(runner)   }}
+          STRATEGY_JSON: ${{ toJSON(strategy) }}
+          MATRIX_JSON:   ${{ toJSON(matrix)   }}
+          GITHUB_JSON:   ${{ toJSON(github)   }}
+
+      - name: Setup go version
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ inputs.go-version }}
+
+      # --vvv-- Cache Setup & Checkout --vvv--
+      - name: Setup go cache paths
+        id: go-cache-paths
+        run: |
+          echo "::set-output name=go-build::$(go env GOCACHE)"
+          echo "::set-output name=go-mod::$(go env GOMODCACHE)"
+
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      # For private repo use, add credentials for git here, like this:
+
+      #- name: Add credentials for git
+      #  run: |
+      #    git config --global url."https://${{ secrets.REPO_FETCHING_TOKEN }}:x-oauth-basic@github.com".insteadOf "https://github.com"
+
+      - name: Go Build Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-build }}
+          key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
+
+      - name: Go Mod Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-mod }}
+          key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum') }}
+      # --^^^-- Cache Setup & Checkout --^^^--
+
+      # Run testing on the code
+      - name: Run testing
+        working-directory: ${{ inputs.working-directory }}
+        shell: bash
+        run: |
+          go test -v ${{ inputs.tests-race && '-race' || '' }} -coverprofile=coverage.txt ./...
+          go test ${{ inputs.tests-race && '-race' || '' }} -json > report.json ./...
+
+      - name: Send results to codecov.io
+        uses: codecov/codecov-action@v2
+        with:
+          directory: ${{ inputs.working-directory }}
+          flags:     unittests
+
+      # upload report as artifact
+      - name: Archive unit tests report
+        uses: actions/upload-artifact@v2
+        with:
+          name: report
+          path: report.json
+          retention-days: 2
+
+      # upload coverage as artifact
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: coverage.txt
+          retention-days: 2
+
+  sonarcloud:
+    needs: unit_test
+    runs-on: [ ubuntu-latest ]
+    steps:
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dproject.settings=./.sonar-project.properties
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN:  ${{ secrets.SONAR_TOKEN }}
+
+
+  goreportcard:
+    runs-on: [ ubuntu-latest ]
+    if: github.event_name == 'push'
+    steps:
+      - name: Go report card
+        uses: creekorful/goreportcard-action@v1.0
+
+
+  style:
+    runs-on: [ ubuntu-latest ]
+    name: Go format check
+    if: inputs.style-skip == false
+    steps:
+      - name: Job Environment Information
+        uses: hmarr/debug-action@v2
+
+      - name: Job Context Information
+        shell: bash
+        run: |
+          echo -e "\e[1;31mjob Context\e[0m"
+          echo $JOB_JSON | jq '.'
+          echo -e "\e[1;31msteps Context\e[0m"
+          echo $STEPS_JSON | jq '.'
+          echo -e "\e[1;31mrunner Context\e[0m"
+          echo $RUNNER_JSON | jq '.'
+          echo -e "\e[1;31mstrategy Context\e[0m"
+          echo $STRATEGY_JSON | jq '.'
+          echo -e "\e[1;31mmatrix Context\e[0m"
+          echo $MATRIX_JSON | jq '.'
+          echo -e "\e[1;31msecrets Context\e[0m"
+          echo '${{ toJSON(secrets) }}' | jq -r 'keys[]'
+          echo -e "\e[1;31mgithub Context\e[0m"
+          echo $GITHUB_JSON | jq '.'
+        env:
+          JOB_JSON:      ${{ toJSON(job)      }}
+          STEPS_JSON:    ${{ toJSON(steps)    }}
+          RUNNER_JSON:   ${{ toJSON(runner)   }}
+          STRATEGY_JSON: ${{ toJSON(strategy) }}
+          MATRIX_JSON:   ${{ toJSON(matrix)   }}
+          GITHUB_JSON:   ${{ toJSON(github)   }}
+
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      # For private repo use, add credentials for git here, like this:
+
+      #- name: Add credentials for git
+      #  run: |
+      #    git config --global url."https://${{ secrets.REPO_FETCHING_TOKEN }}:x-oauth-basic@github.com".insteadOf "https://github.com"
+
+      - name: Setup go version
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ inputs.go-version }}
+
+      - name: Run gofmt
+        working-directory: ${{ inputs.working-directory }}
+        shell: bash
+        run: |
+          gofmt -d $(find . -path ./vendor -prune -o -name '*.go' -print) > fmt.patch
+          # Error check & fail if any format mismatches are detected.
+          if [ $(wc fmt.patch | awk '{print $1}') -ne 0 ]; then
+            cat fmt.patch;
+            exit 1;
+          fi
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v2
+        with:
+          name: fmt
+          path: ${{ inputs.working-directory }}/fmt.patch
+          retention-days: 10
+
+
+  golint:
+    runs-on: [ ubuntu-latest ]
+    name: Go Lint
+    if: inputs.lint-skip == false
+    steps:
+      - name: Job Environment Information
+        uses: hmarr/debug-action@v2
+
+      - name: Job Context Information
+        shell: bash
+        run: |
+          echo -e "\e[1;31mjob Context\e[0m"
+          echo $JOB_JSON | jq '.'
+          echo -e "\e[1;31msteps Context\e[0m"
+          echo $STEPS_JSON | jq '.'
+          echo -e "\e[1;31mrunner Context\e[0m"
+          echo $RUNNER_JSON | jq '.'
+          echo -e "\e[1;31mstrategy Context\e[0m"
+          echo $STRATEGY_JSON | jq '.'
+          echo -e "\e[1;31mmatrix Context\e[0m"
+          echo $MATRIX_JSON | jq '.'
+          echo -e "\e[1;31msecrets Context\e[0m"
+          echo '${{ toJSON(secrets) }}' | jq -r 'keys[]'
+          echo -e "\e[1;31mgithub Context\e[0m"
+          echo $GITHUB_JSON | jq '.'
+        env:
+          JOB_JSON:      ${{ toJSON(job)      }}
+          STEPS_JSON:    ${{ toJSON(steps)    }}
+          RUNNER_JSON:   ${{ toJSON(runner)   }}
+          STRATEGY_JSON: ${{ toJSON(strategy) }}
+          MATRIX_JSON:   ${{ toJSON(matrix)   }}
+          GITHUB_JSON:   ${{ toJSON(github)   }}
+
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      # For private repo use, add credentials for git here, like this:
+
+      #- name: Add credentials for git
+      #  run: |
+      #    git config --global url."https://${{ secrets.REPO_FETCHING_TOKEN }}:x-oauth-basic@github.com".insteadOf "https://github.com"
+
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ inputs.go-version }}
+
+      - name: Lint New Issues Only
+        if: github.event_name == 'pull_request'
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: ${{ inputs.lint-version }}
+          working-directory: ${{ inputs.working-directory }}
+          args: --timeout ${{ inputs.lint-timeout }}
+
+      - name: Lint Entire Repo
+        if: github.event_name != 'pull_request'
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: ${{ inputs.lint-version }}
+          working-directory: ${{ inputs.working-directory }}
+          args: --timeout ${{ inputs.lint-timeout }}
+
+
+
+  license:
+    name: License Checker
+    runs-on: [ ubuntu-latest ]
+    if: inputs.license-skip == false
+    steps:
+      - name: Job Environment Information
+        uses: hmarr/debug-action@v2
+
+      - name: Job Context Information
+        shell: bash
+        run: |
+          echo -e "\e[1;31mjob Context\e[0m"
+          echo $JOB_JSON | jq '.'
+          echo -e "\e[1;31msteps Context\e[0m"
+          echo $STEPS_JSON | jq '.'
+          echo -e "\e[1;31mrunner Context\e[0m"
+          echo $RUNNER_JSON | jq '.'
+          echo -e "\e[1;31mstrategy Context\e[0m"
+          echo $STRATEGY_JSON | jq '.'
+          echo -e "\e[1;31mmatrix Context\e[0m"
+          echo $MATRIX_JSON | jq '.'
+          echo -e "\e[1;31msecrets Context\e[0m"
+          echo '${{ toJSON(secrets) }}' | jq -r 'keys[]'
+          echo -e "\e[1;31mgithub Context\e[0m"
+          echo $GITHUB_JSON | jq '.'
+        env:
+          JOB_JSON:      ${{ toJSON(job)      }}
+          STEPS_JSON:    ${{ toJSON(steps)    }}
+          RUNNER_JSON:   ${{ toJSON(runner)   }}
+          STRATEGY_JSON: ${{ toJSON(strategy) }}
+          MATRIX_JSON:   ${{ toJSON(matrix)   }}
+          GITHUB_JSON:   ${{ toJSON(github)   }}
+
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ inputs.go-version }}
+
+      # --vvv-- Cache Setup & Checkout --vvv--
+      - name: Configure cache variables
+        id: go-cache-paths
+        run: |
+          echo "::set-output name=go-build::$(go env GOCACHE)"
+          echo "::set-output name=go-mod::$(go env GOMODCACHE)"
+
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      # For private repo use, add credentials for git here, like this:
+
+      #- name: Add credentials for git
+      #  run: |
+      #    git config --global url."https://${{ secrets.REPO_FETCHING_TOKEN }}:x-oauth-basic@github.com".insteadOf "https://github.com"
+
+      - name: Go Build Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-build }}
+          key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
+
+      - name: Go Mod Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-mod }}
+          key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum') }}
+      # --^^^-- Cache Setup & Checkout --^^^--
+
+      - name: Fetch Org Approved Licenses & merge to local
+        shell: bash
+        run: |
+          if [ -f .licensed.yml ]; then
+            echo "Please submit these licenses to the shared list..."
+            mv .licensed.yml .licensed_local.yml
+          fi
+          if [ -f .licensed.yaml ]; then
+            echo "Please submit these licenses to the shared list..."
+            mv .licensed.yaml .licensed_local.yml
+          fi
+          if [ -f .licensed.json ]; then
+            echo "JSON is not supported.  Please use .licensed.yml or submit a patch."
+          fi
+          if [ ! -f .licensed_local.yml ]; then
+            touch .licensed_local.yml
+          fi
+          curl -L -s -f -H 'Accept: application/vnd.github.v3.raw' \
+            https://api.github.com/repos/xmidt-org/.github/contents/licensing/org-approved.yml?ref=main \
+            -o .licensed_common.yml
+          yq eval-all '. as $item ireduce ({}; . *+  $item)' .licensed_local.yml .licensed_common.yml > .licensed.yml
+
+      - name: Setup licensed
+        uses: jonabc/setup-licensed@v1
+        with:
+         version: 3.x
+      - run: go get ./...
+      - run: licensed cache
+
+      - name: Validate compliance
+        run: |
+          licensed status -f yaml > licensing.yml || true
+          yq eval 'del(.apps[].sources[].dependencies[] | select(.allowed == "true") )' licensing.yml > disallowed.yml
+          licensed status
+
+      - name: Archive license results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: licensing
+          path: |
+            ${{ inputs.working-directory }}/licensing.yml
+            ${{ inputs.working-directory }}/disallowed.yml
+          retention-days: 30
+
+
+# Create the Release notes bundle
+
+
+  release:
+    needs: [ build_program, unit_test, style, golint, license ]
+    if: |
+      always() &&
+      contains( inputs.release-branches, github.ref_name ) &&
+      needs.build_program.result != 'failure' &&
+      needs.unit_test.result     != 'failure' &&
+      needs.style.result         != 'failure' &&
+      needs.golint.result        != 'failure' &&
+      needs.license.result       != 'failure'
+    runs-on: [ ubuntu-latest ]
+    outputs:
+      is_release: ${{ steps.check_for_release.outputs.value }}
+    name: Release
+    steps:
+      - name: Job Environment Information
+        uses: hmarr/debug-action@v2
+
+      - name: Job Context Information
+        shell: bash
+        run: |
+          echo -e "\e[1;31mjob Context\e[0m"
+          echo $JOB_JSON | jq '.'
+          echo -e "\e[1;31msteps Context\e[0m"
+          echo $STEPS_JSON | jq '.'
+          echo -e "\e[1;31mrunner Context\e[0m"
+          echo $RUNNER_JSON | jq '.'
+          echo -e "\e[1;31mstrategy Context\e[0m"
+          echo $STRATEGY_JSON | jq '.'
+          echo -e "\e[1;31mmatrix Context\e[0m"
+          echo $MATRIX_JSON | jq '.'
+          echo -e "\e[1;31msecrets Context\e[0m"
+          echo '${{ toJSON(secrets) }}' | jq -r 'keys[]'
+          echo -e "\e[1;31mgithub Context\e[0m"
+          echo $GITHUB_JSON | jq '.'
+        env:
+          JOB_JSON:      ${{ toJSON(job)      }}
+          STEPS_JSON:    ${{ toJSON(steps)    }}
+          RUNNER_JSON:   ${{ toJSON(runner)   }}
+          STRATEGY_JSON: ${{ toJSON(strategy) }}
+          MATRIX_JSON:   ${{ toJSON(matrix)   }}
+          GITHUB_JSON:   ${{ toJSON(github)   }}
+
+      - name: Checkout the code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Generate Release Version
+        uses: xmidt-org/release-builder-action@v3
+        id: prebundle
+        with:
+          gh-token: ${{ github.token }}
+          dry-run: true
+
+      - name: Generate Release Bundle and Release
+        uses: xmidt-org/release-builder-action@v3
+        id: bundle
+        with:
+          gh-token: ${{ github.token }}
+
+      - name: Upload Release
+        if:  steps.bundle.outputs.release-tag != ''
+        uses: ncipollo/release-action@v1
+        with:
+          name: ${{ steps.bundle.outputs.release-name }}
+          tag: ${{ steps.bundle.outputs.release-tag }}
+          draft: false
+          prerelease: false
+          bodyFile: ${{ steps.bundle.outputs.release-body-file }}
+          artifacts: "${{ steps.bundle.outputs.artifact-dir }}/*"
+          token: ${{ github.token }}
+
+      - name: Mark this as a release build
+        id: check_for_release
+        if:  steps.bundle.outputs.release-tag != ''
+        run: |
+          echo "release_tag=${{ steps.bundle.outputs.release-tag }}" >> $GITHUB_ENV
+          echo "::set-output name=value::true"
