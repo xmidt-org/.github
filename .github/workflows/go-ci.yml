@@ -31,6 +31,23 @@ on:
         type: boolean
         default: false
 
+      # Docker focused
+      docker-directory:
+        description: 'The directory to look for the docker file.'
+        required: false
+        type: string
+        default: .
+      docker-file:
+        description: 'The name of the docker file to look for and build.'
+        required: false
+        type: string
+        default: Dockerfile
+      docker-skip:
+        description: 'Skip building a docker image.'
+        required: false
+        type: boolean
+        default: false
+
       # Lint focused
       lint-skip:
         description: 'Skip running the lint check.'
@@ -189,7 +206,6 @@ jobs:
       - name: Run build
         working-directory: ${{ inputs.working-directory }}
         run: go build ./...
-
 
 
   unit_test:
@@ -454,7 +470,6 @@ jobs:
           args: --timeout ${{ inputs.lint-timeout }}
 
 
-
   license:
     name: License Checker
     runs-on: [ ubuntu-latest ]
@@ -583,7 +598,8 @@ jobs:
       needs.license.result       != 'failure'
     runs-on: [ ubuntu-latest ]
     outputs:
-      is_release: ${{ steps.check_for_release.outputs.value }}
+      docker_file_present: ${{ steps.check_for_release.outputs.docker_file_present }}
+      is_release:          ${{ steps.check_for_release.outputs.value }}
     name: Release
     steps:
       - name: Job Environment Information
@@ -650,3 +666,97 @@ jobs:
         run: |
           echo "release_tag=${{ steps.bundle.outputs.release-tag }}" >> $GITHUB_ENV
           echo "::set-output name=value::true"
+
+          # Check for a dockerfile
+          if [ -f ${{ inputs.docker-directory }}/${{ inputs.docker-file}} ]; then
+            echo "::set-output name=docker_file_present::true"
+          fi
+
+  docker:
+    needs: release
+    if: |
+      always() &&
+      inputs.docker-skip == false &&
+      contains(needs.release.outputs.is_release, 'true') &&
+      contains(needs.release.outputs.docker_file_present, 'true')
+    runs-on: [ ubuntu-latest ]
+    name: Release Docker Image
+    steps:
+      - name: Job Environment Information
+        uses: hmarr/debug-action@v2
+
+      - name: Job Context Information
+        shell: bash
+        run: |
+          echo -e "\e[1;31mjob Context\e[0m"
+          echo $JOB_JSON | jq '.'
+          echo -e "\e[1;31msteps Context\e[0m"
+          echo $STEPS_JSON | jq '.'
+          echo -e "\e[1;31mrunner Context\e[0m"
+          echo $RUNNER_JSON | jq '.'
+          echo -e "\e[1;31mstrategy Context\e[0m"
+          echo $STRATEGY_JSON | jq '.'
+          echo -e "\e[1;31mmatrix Context\e[0m"
+          echo $MATRIX_JSON | jq '.'
+          echo -e "\e[1;31msecrets Context\e[0m"
+          echo '${{ toJSON(secrets) }}' | jq -r 'keys[]'
+          echo -e "\e[1;31mgithub Context\e[0m"
+          echo $GITHUB_JSON | jq '.'
+        env:
+          JOB_JSON:      ${{ toJSON(job)      }}
+          STEPS_JSON:    ${{ toJSON(steps)    }}
+          RUNNER_JSON:   ${{ toJSON(runner)   }}
+          STRATEGY_JSON: ${{ toJSON(strategy) }}
+          MATRIX_JSON:   ${{ toJSON(matrix)   }}
+          GITHUB_JSON:   ${{ toJSON(github)   }}
+
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          DOCKER_IMAGE=xmidt/${PWD##*/}
+          VERSION=edge
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          elif [[ $GITHUB_REF == refs/heads/* ]]; then
+            VERSION=$(echo ${GITHUB_REF#refs/heads/} | sed -r 's#/+#-#g')
+          elif [[ $GITHUB_REF == refs/pull/* ]]; then
+            VERSION=pr-${{ github.event.number }}
+          fi
+          TAGS="${DOCKER_IMAGE}:${VERSION}"
+          if [ "${{ github.event_name }}" = "push" ]; then
+            TAGS="$TAGS,${DOCKER_IMAGE}:sha-${GITHUB_SHA::8}"
+          fi
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1` | tail -1)
+          if [ "${LATEST_TAG}" == "${VERSION}" ]; then
+            TAGS="$TAGS,${DOCKER_IMAGE}:latest"
+          fi
+          echo "::set-output name=version::${VERSION}"
+          echo "::set-output name=tags::${TAGS}"
+          echo "::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ${{ inputs.docker-directory }}
+          file: ${{ inputs.docker-directory }}/${{ inputs.docker-file }}
+          push: true
+          tags: ${{ steps.prep.outputs.tags }}
+          labels: |
+            org.opencontainers.image.source=${{ github.event.repository.html_url }}
+            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
+            org.opencontainers.image.revision=${{ github.sha }}
