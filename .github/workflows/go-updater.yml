@@ -19,9 +19,9 @@ on:
         default: .
 
 jobs:
-  maintain_prerequisites:
+  maintain_dependencies:
     runs-on: [ ubuntu-latest ]
-    name: Update prerequisite code
+    name: Update dependencies
     steps:
       - name: Workflow Version
         run: |
