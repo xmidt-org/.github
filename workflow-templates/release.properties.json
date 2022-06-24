@@ -1,8 +1,0 @@
-{
-    "name": "Release Workflow",
-    "description": "Create a new release CI workflow template.",
-    "iconName": "arrow-right-circle",
-    "categories": [
-        "Go"
-    ]
-}

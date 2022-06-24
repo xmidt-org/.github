@@ -1,0 +1,8 @@
+{
+    "name": "CI & Release General Workflow",
+    "description": "General checks to run on commits and PRs CI workflow template.  Also releases based on CHANGELOG.md updates.",
+    "iconName": "code",
+    "categories": [
+        "Go"
+    ]
+}
