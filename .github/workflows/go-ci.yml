@@ -67,7 +67,7 @@ on:
 
       # License focused
       license-skip:
-        description: 'Skip building the license check.'
+        description: 'Skip running the license check.'
         required: false
         type: boolean
         default: false
@@ -80,6 +80,12 @@ on:
         default: main
 
       # Sonarcloud focused
+      sonarcloud-skip:
+        description: 'Skip running the sonarcloud upload.'
+        required: false
+        type: boolean
+        default: false
+
       sonarcloud-exclusions:
         description: 'Files to exclude from sonarcloud.'
         required: false
@@ -306,6 +312,7 @@ jobs:
           retention-days: 2
 
   sonarcloud:
+    if: inputs.sonarcloud-skip == false
     needs: unit_test
     runs-on: [ ubuntu-latest ]
     steps:
