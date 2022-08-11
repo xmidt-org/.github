@@ -63,7 +63,7 @@ on:
         description: 'The working directory for this project.'
         required: false
         type: string
-        default: '1.48'
+        default: 'v1.48'
 
       # License focused
       license-skip:
