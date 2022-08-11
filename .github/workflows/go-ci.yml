@@ -14,7 +14,7 @@ on:
         description: "The go version to use.  Example: '1.18.x'"
         required: false
         type: string
-        default: '1.18.x'
+        default: '1.19.x'
       working-directory:
         description: 'The working directory for this project.'
         required: false
@@ -63,7 +63,7 @@ on:
         description: 'The working directory for this project.'
         required: false
         type: string
-        default: 'v1.45'
+        default: 'latest'
 
       # License focused
       license-skip:
