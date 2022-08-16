@@ -32,6 +32,11 @@ on:
         default: false
 
       # Docker focused
+      docker-skip:
+        description: 'Skip building a docker image.'
+        required: false
+        type: boolean
+        default: false
       docker-directory:
         description: 'The directory to look for the docker file.'
         required: false
@@ -42,8 +47,10 @@ on:
         required: false
         type: string
         default: Dockerfile
-      docker-skip:
-        description: 'Skip building a docker image.'
+
+      # Goreportcard focused
+      goreportcard-skip:
+        description: 'Skip running the goreportcard update.'
         required: false
         type: boolean
         default: false
@@ -73,6 +80,11 @@ on:
         default: false
 
       # Release focused
+      release-skip:
+        description: 'Skip running releaseing.'
+        required: false
+        type: boolean
+        default: false
       release-branches:
         description: 'The only branches that will trigger a release.'
         required: false
@@ -85,31 +97,26 @@ on:
         required: false
         type: boolean
         default: false
-
       sonarcloud-exclusions:
         description: 'Files to exclude from sonarcloud.'
         required: false
         type: string
         default: '**/*_test.go,**/vendor/**'
-
       sonarcloud-sources:
         description: 'Sources to include in sonarcloud.'
         required: false
         type: string
         default: '.'
-
       sonarcloud-test-inclusions:
         description: 'Tests to include in sonarcloud.'
         required: false
         type: string
         default: '**/*_test.go'
-
       sonarcloud-test-exclusions:
         description: 'Tests to exclude from sonarcloud.'
         required: false
         type: string
         default: '**/vendor/**'
-
       sonarcloud-tests:
         description: 'Tests to include in sonarcloud.'
         required: false
@@ -124,16 +131,16 @@ on:
         default: false
 
       # Unit test focused
-      tests-race:
-        description: 'If set to "true" (default), race condition checking will be performed during unit tests.  Otherwise no race condition checking will be done.'
-        required: false
-        type: boolean
-        default: true
       tests-skip:
         description: 'Skip running the unit tests.'
         required: false
         type: boolean
         default: false
+      tests-race:
+        description: 'If set to "true" (default), race condition checking will be performed during unit tests.  Otherwise no race condition checking will be done.'
+        required: false
+        type: boolean
+        default: true
 
 env:
   WORKFLOW_VERSION: "1.0.1"
@@ -341,7 +348,9 @@ jobs:
 
   goreportcard:
     runs-on: [ ubuntu-latest ]
-    if: github.event_name == 'push'
+    if: |
+      inputs.goreportcard-skip == false &&
+      github.event_name == 'push'
     steps:
       - name: Go report card
         uses: creekorful/goreportcard-action@v1.0
@@ -597,6 +606,7 @@ jobs:
     needs: [ build_program, unit_test, style, golint, license ]
     if: |
       always() &&
+      inputs.release-skip == false &&
       contains( inputs.release-branches, github.ref_name ) &&
       needs.build_program.result != 'failure' &&
       needs.unit_test.result     != 'failure' &&
