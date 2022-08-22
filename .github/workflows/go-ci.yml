@@ -777,3 +777,22 @@ jobs:
             org.opencontainers.image.source=${{ github.event.repository.html_url }}
             org.opencontainers.image.created=${{ steps.prep.outputs.created }}
             org.opencontainers.image.revision=${{ github.sha }}
+
+  all_passed:
+    needs: [ build_program, unit_test, style, golint, license, release, sonarcloud, docker ]
+    if: always()
+    name: All checks passed check.
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Fail unless required checks pass
+        if: |
+          needs.build_program.result == 'failure' ||
+          needs.unit_test.result     == 'failure' ||
+          needs.style.result         == 'failure' ||
+          needs.golint.result        == 'failure' ||
+          needs.license.result       == 'failure' ||
+          needs.release.result       == 'failure' ||
+          needs.sonarcloud.result    == 'failure' ||
+          needs.docker.result        == 'failure'
+        run: exit 1
+      - run: 'echo "✅ All required jobs have passed!"'
