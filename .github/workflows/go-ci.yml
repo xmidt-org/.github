@@ -570,7 +570,7 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
 
   all_passed:
-    needs: [ build_program, unit_test, style, golint, license, release, sonarcloud, docker ]
+    needs: [ build_program, unit_test, style, golint, license, release, sonarcloud, docker, docker_check ]
     if: always()
     name: All checks passed check.
     runs-on: [ubuntu-latest]
