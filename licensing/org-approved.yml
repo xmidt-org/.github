@@ -13,6 +13,7 @@ allowed:
 # that apply.  Use the spdx license name for consistency.
 reviewed:
   go:
+    - emperror.dev/errors                                                       # mit
     - github.com/bgentry/speakeasy                                              # mit, apache-2.0 (windows)
     - github.com/blang/semver                                                   # mit
     - github.com/cheggaaa/pb                                                    # bsd-3-clause
@@ -28,6 +29,8 @@ reviewed:
     - github.com/golang/protobuf/**/*                                           # bsd-3-clause
     - github.com/goph/emperror                                                  # mit
     - github.com/gorilla/mux                                                    # bsd-3-clause
+    - github.com/gorilla/schema                                                 # bsd-3-clause
+    - github.com/go-zookeeper/zk                                                # bsd-3-clause
     - github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc                      # bsd-3-clause
     - github.com/hashicorp/errwrap                                              # mpl-2.0
     - github.com/hashicorp/go-multierror                                        # mpl-2.0
