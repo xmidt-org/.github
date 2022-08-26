@@ -423,7 +423,7 @@ jobs:
         id: check
         working-directory: ${{ inputs.docker-directory }}
         shell: bash
-        run:
+        run: |
           if test -f "${{ inputs.docker-file }}"; then
             echo "::set-output present=value::true"
           fi
