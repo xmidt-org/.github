@@ -464,19 +464,13 @@ jobs:
     outputs:
       docker_file_present: ${{ steps.check_for_release.outputs.docker_file_present }}
       is_release:          ${{ steps.check_for_release.outputs.value }}
+      release_tag:         ${{ steps.bundle.outputs.release-tag }}
     name: Release
     steps:
       - name: Checkout the code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Generate Release Version
-        uses: xmidt-org/release-builder-action@v3
-        id: prebundle
-        with:
-          gh-token: ${{ github.token }}
-          dry-run: true
 
       - name: Generate Release Bundle and Release
         uses: xmidt-org/release-builder-action@v3
@@ -524,25 +518,6 @@ jobs:
       - name: Prepare
         id: prep
         run: |
-          DOCKER_IMAGE=xmidt/${PWD##*/}
-          VERSION=edge
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/}
-          elif [[ $GITHUB_REF == refs/heads/* ]]; then
-            VERSION=$(echo ${GITHUB_REF#refs/heads/} | sed -r 's#/+#-#g')
-          elif [[ $GITHUB_REF == refs/pull/* ]]; then
-            VERSION=pr-${{ github.event.number }}
-          fi
-          TAGS="${DOCKER_IMAGE}:${VERSION}"
-          if [ "${{ github.event_name }}" = "push" ]; then
-            TAGS="$TAGS,${DOCKER_IMAGE}:sha-${GITHUB_SHA::8}"
-          fi
-          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1` | tail -1)
-          if [ "${LATEST_TAG}" == "${VERSION}" ]; then
-            TAGS="$TAGS,${DOCKER_IMAGE}:latest"
-          fi
-          echo "::set-output name=version::${VERSION}"
-          echo "::set-output name=tags::${TAGS}"
           echo "::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
 
       - name: Set up QEMU
@@ -563,7 +538,7 @@ jobs:
           context: ${{ inputs.docker-directory }}
           file: ${{ inputs.docker-directory }}/${{ inputs.docker-file }}
           push: true
-          tags: ${{ steps.prep.outputs.tags }}
+          tags: ${{ needs.release.outputs.release_tag }}
           labels: |
             org.opencontainers.image.source=${{ github.event.repository.html_url }}
             org.opencontainers.image.created=${{ steps.prep.outputs.created }}
