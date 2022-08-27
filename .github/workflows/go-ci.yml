@@ -536,6 +536,12 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ghcr.io/xmidt-org/${{ github.event.name }}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
@@ -553,10 +559,7 @@ jobs:
           file: ${{ inputs.docker-directory }}/${{ inputs.docker-file }}
           push: true
           tags: ${{ needs.release.outputs.release_tag }}
-          labels: |
-            org.opencontainers.image.source=${{ github.event.repository.html_url }}
-            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
-            org.opencontainers.image.revision=${{ github.sha }}
+          labels: ${{ steps.meta.outputs.labels }}
 
   all_passed:
     needs: [ build_program, unit_test, style, golint, license, release, sonarcloud, docker, docker_check ]
