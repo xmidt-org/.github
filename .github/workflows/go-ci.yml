@@ -260,7 +260,8 @@ jobs:
     runs-on: [ ubuntu-latest ]
     if: |
       inputs.goreportcard-skip == false &&
-      github.event_name == 'push'
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch'
     steps:
       - name: Go report card
         uses: creekorful/goreportcard-action@v1.0
@@ -494,7 +495,6 @@ jobs:
         id: check_for_release
         if:  steps.bundle.outputs.release-tag != ''
         run: |
-          echo "release_tag=${{ steps.bundle.outputs.release-tag }}" >> $GITHUB_ENV
           echo "::set-output name=value::true"
 
           # Check for a dockerfile
