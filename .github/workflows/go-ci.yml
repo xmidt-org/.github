@@ -432,7 +432,7 @@ jobs:
 
             docker build ${{ inputs.docker-directory }} -f ${{ inputs.docker-file }} \
               --tag ghcr.io/${{ github.repository }}:latest \
-              --label "org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+              --label "org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
               --label "org.opencontainers.image.revision=${{ github.sha }}"
           fi
 
@@ -521,7 +521,7 @@ jobs:
         run: |
           docker build ${{ inputs.docker-directory }} -f ${{ inputs.docker-file }} \
             --tag ghcr.io/${{ github.repository }}:${{ needs.release.outputs.release_tag }} \
-            --label "org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            --label "org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
             --label "org.opencontainers.image.revision=${{ github.sha }}"
 
       - name: Push image
