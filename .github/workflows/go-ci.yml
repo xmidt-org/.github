@@ -416,34 +416,25 @@ jobs:
   docker_check:
     if: inputs.docker-skip == false
     runs-on: [ ubuntu-latest ]
+    outputs:
+      docker_file_present: ${{ steps.build.outputs.docker_file_present }}
     name: Check Docker Build
     steps:
       - name: Checkout the code
         uses: actions/checkout@v3
 
-      - name: Check if there is a docker file
-        id: check
-        working-directory: ${{ inputs.docker-directory }}
+      - name: Build image
+        id: build
         run: |
-          if test -f "${{ inputs.docker-file }}"; then
-            echo "::set-output name=present::true"
+          # Check for a dockerfile
+          if [ -f ${{ inputs.docker-directory }}/${{ inputs.docker-file}} ]; then
+            echo "::set-output name=docker_file_present::true"
+
+            docker build ${{ inputs.docker-directory }} -f ${{ inputs.docker-file }} \
+              --tag ghcr.io/${{ github.repository }}:latest \
+              --label "org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+              --label "org.opencontainers.image.revision=${{ github.sha }}"
           fi
-
-      - name: Set up QEMU
-        if:  steps.check.outputs.present != ''
-        uses: docker/setup-qemu-action@v1
-
-      - name: Set up Docker Buildx
-        if:  steps.check.outputs.present != ''
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build and Test
-        if:  steps.check.outputs.present != ''
-        uses: docker/build-push-action@v2
-        with:
-          context: ${{ inputs.docker-directory }}
-          file: ${{ inputs.docker-directory }}/${{ inputs.docker-file }}
-          push: false
 
 
 # Create the Release notes bundle
@@ -463,7 +454,6 @@ jobs:
       needs.license.result       != 'failure'
     runs-on: [ ubuntu-latest ]
     outputs:
-      docker_file_present: ${{ steps.check_for_release.outputs.docker_file_present }}
       is_release:          ${{ steps.check_for_release.outputs.value }}
       release_tag:         ${{ steps.bundle.outputs.release-tag }}
     name: Release
@@ -510,18 +500,14 @@ jobs:
         run: |
           echo "::set-output name=value::true"
 
-          # Check for a dockerfile
-          if [ -f ${{ inputs.docker-directory }}/${{ inputs.docker-file}} ]; then
-            echo "::set-output name=docker_file_present::true"
-          fi
-
   docker:
-    needs: release
+    needs: [ release, docker_check ]
     if: |
       always() &&
       inputs.docker-skip == false &&
+      needs.docker_check.result  == 'success' &&
       contains(needs.release.outputs.is_release, 'true') &&
-      contains(needs.release.outputs.docker_file_present, 'true')
+      contains(needs.docker_check.outputs.docker_file_present, 'true')
     runs-on: [ ubuntu-latest ]
     name: Release Docker Image
     steps:
@@ -532,9 +518,8 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build image
-        working-directory: ${{ inputs.docker-directory }}
         run: |
-          docker build ${{ inputs.docker-file }} \
+          docker build ${{ inputs.docker-directory }} -f ${{ inputs.docker-file }} \
             --tag ghcr.io/${{ github.repository }}:${{ needs.release.outputs.release_tag }} \
             --label "org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
             --label "org.opencontainers.image.revision=${{ github.sha }}"
