@@ -473,11 +473,24 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Generate Release Version
+        uses: xmidt-org/release-builder-action@v3
+        id: prebundle
+        with:
+          gh-token: ${{ github.token }}
+          dry-run: true
+
       - name: Generate Release Bundle and Release
         uses: xmidt-org/release-builder-action@v3
         id: bundle
         with:
           gh-token: ${{ github.token }}
+
+      - name: Debugging
+        run: |
+          ls -la
+          echo "${{ steps.bundle.outputs.release-body-file }}"
+          cat ${{ steps.bundle.outputs.release-body-file }}
 
       - name: Upload Release
         if:  steps.bundle.outputs.release-tag != ''
