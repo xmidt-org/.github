@@ -43,6 +43,7 @@ reviewed:
     - github.com/magiconair/properties                                          # bsd-2-clause
     - github.com/Masterminds/sprig                                              # mit
     - github.com/mattn/go-runewidth                                             # mit
+    - github.com/miekg/dns                                                      # bsd-3-clause
     - github.com/mitchellh/go-homedir                                           # mit
     - github.com/mitchellh/mapstructure                                         # mit
     - github.com/opentracing/basictracer-go                                     # apache-2.0
