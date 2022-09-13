@@ -40,6 +40,8 @@ reviewed:
     - github.com/jtacoma/uritemplates                                           # bsd-3-clause
     - github.com/jmespath/go-jmespath                                           # apache-2.0
     - github.com/kevinburke/ssh_config                                          # mit
+    - github.com/klauspost/compress                                             # bsd-3-clause, apache-2.0, mit
+    - github.com/klauspost/compress                                             # bsd-3-clause, apache-2.0, mit
     - github.com/magiconair/properties                                          # bsd-2-clause
     - github.com/Masterminds/sprig                                              # mit
     - github.com/mattn/go-runewidth                                             # mit
