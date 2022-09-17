@@ -550,7 +550,7 @@ jobs:
           docker push $IMAGE_ID
 
   all_passed:
-    needs: [ build_program, unit_test, style, golint, license, release, sonarcloud, docker, docker_check ]
+    needs: [ build_program, unit_test, style, golint, license, release, docker, docker_check ]
     if: always()
     name: All checks passed check.
     runs-on: [ubuntu-latest]
@@ -563,7 +563,6 @@ jobs:
           needs.golint.result        == 'failure' ||
           needs.license.result       == 'failure' ||
           needs.release.result       == 'failure' ||
-          needs.sonarcloud.result    == 'failure' ||
           needs.docker_check.result  == 'failure' ||
           needs.docker.result        == 'failure'
         run: exit 1
