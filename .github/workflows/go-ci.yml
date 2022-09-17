@@ -240,12 +240,12 @@ jobs:
       - name: Fetch report.json
         uses: actions/download-artifact@v3
         with:
-          name: report.json
+          name: report
 
       - name: Fetch coverage.txt
         uses: actions/download-artifact@v3
         with:
-          name: coverage.txt
+          name: coverage
 
       - name: Configure SonarCloud project.
         uses: xmidt-org/sonarcloud-project-config@v1
