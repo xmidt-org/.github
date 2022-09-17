@@ -227,19 +227,38 @@ jobs:
           path: coverage.txt
           retention-days: 2
 
-
   sonarcloud:
     if: inputs.sonarcloud-skip == false
     needs: unit_test
     runs-on: [ ubuntu-latest ]
     steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+          with: fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Fetch report.json
+        uses: actions/download-artifact@v3
+        with:
+          name: report.json
+
+      - name: Fetch coverage.txt
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage.txt
+
+      - name: Configure SonarCloud project.
+        uses: xmidt-org/sonarcloud-project-config@v1
+        with:
+          analysis-mode: ci
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         with:
           args: >
             -Dsonar.organization=${{ github.repository_owner }}
-            -Dsonar.projectKey=${{ github.repository_owner }}_${{ github.name }}
-            -Dsonar.projectName=${{ github.name }}
+            -Dsonar.projectKey=${{ github.repository_owner }}_${{ github.event.repository.name }}
+            -Dsonar.projectName=${{ github.event.repository.name }}
             -Dsonar.sources=${{ inputs.sonarcloud-sources }}
             -Dsonar.exclusions=${{ inputs.sonarcloud-exclusions }}
             -Dsonar.tests=${{ inputs.sonarcloud-tests }}
