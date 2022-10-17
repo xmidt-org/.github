@@ -60,6 +60,7 @@ reviewed:
     - github.com/uber/jaeger-client-go/**/*                                     # apache-2.0
     - github.com/uber/jaeger-lib/metrics                                        # apache-2.0
     - github.com/xanzy/ssh-agent                                                # apache-2.0
+    - golang.org/x/*                                                            # bsd-3-clause
     - golang.org/x/**/*                                                         # bsd-3-clause
     - google.golang.org/genproto/googleapis/rpc/status                          # apache-2.0
     - google.golang.org/grpc                                                    # apache-2.0
