@@ -11,7 +11,7 @@ on:
         required: true
         type: string
       latest:
-        description: 'If this image should be marked as latest.'
+        description: 'If this image should be marked as latest. [DEPRECATED]'
         type: boolean
         default: false
       docker-directory:
@@ -56,8 +56,3 @@ jobs:
       - name: Push Versioned Image
         run: |
           docker push ghcr.io/${{ github.repository }}:${{ inputs.release-tag }}
-
-      - name: Push Image as Latest
-        if: ${{ inputs.latest }}
-        run: |
-          docker push ghcr.io/${{ github.repository }}:latest

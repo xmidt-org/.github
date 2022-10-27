@@ -547,7 +547,6 @@ jobs:
       - name: Push image
         run: |
           docker push ghcr.io/${{ github.repository }}:${{ needs.release.outputs.release_tag }}
-          docker push ghcr.io/${{ github.repository }}:latest
 
   all_passed:
     needs: [ build_program, unit_test, style, golint, license, release, docker, docker_check ]
