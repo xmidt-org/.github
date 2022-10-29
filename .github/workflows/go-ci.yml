@@ -537,10 +537,11 @@ jobs:
       - name: Login to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build Image
+      - name: Build Versioned Image
         run: |
           docker build ${{ inputs.docker-directory }} -f ${{ inputs.docker-file }} \
             --tag ghcr.io/${{ github.repository }}:${{ needs.release.outputs.release_tag }} \
+            --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
             --label "org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
             --label "org.opencontainers.image.revision=${{ github.sha }}"
 
@@ -548,9 +549,17 @@ jobs:
         run: |
           docker push ghcr.io/${{ github.repository }}:${{ needs.release.outputs.release_tag }}
 
-      - name: Push Main/Latest Image
+      - name: Build Latest Image
         run: |
-          docker push ghcr.io/${{ github.repository }}:main
+          docker build ${{ inputs.docker-directory }} -f ${{ inputs.docker-file }} \
+            --tag ghcr.io/${{ github.repository }}:latest \
+            --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
+            --label "org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+            --label "org.opencontainers.image.revision=${{ github.sha }}"
+
+      - name: Push Latest Image
+        run: |
+          docker push ghcr.io/${{ github.repository }}:latest
 
   all_passed:
     needs: [ build_program, unit_test, style, golint, license, release, docker, docker_check ]
