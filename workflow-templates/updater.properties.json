@@ -1,8 +1,0 @@
-{
-    "name": "Automatic Dependency Update Workflow",
-    "description": "Performs routine dependency maintenance.",
-    "iconName": "arrow-right-circle",
-    "categories": [
-        "Go"
-    ]
-}
