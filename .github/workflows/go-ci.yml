@@ -14,7 +14,7 @@ on:
         description: "The go version to use.  Example: '1.18.x'"
         required: false
         type: string
-        default: '^1.19.x'
+        default: '^1.20.x'
       go-version-latest:
         description: "Will always use the latest version of go available."
         required: false
@@ -75,7 +75,7 @@ on:
         description: 'The working directory for this project.'
         required: false
         type: string
-        default: 'v1.48'
+        default: 'latest'
 
       # License focused
       license-skip:
@@ -166,7 +166,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup go version
-        uses: actions/setup-go@30b9ddff1180797dbf0efc06837929f98bdf7af7
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ inputs.go-version }}
           check-latest: ${{ inputs.go-version-latest }}
@@ -192,7 +192,7 @@ jobs:
       #    git config --global url."https://${{ secrets.REPO_FETCHING_TOKEN }}:x-oauth-basic@github.com".insteadOf "https://github.com"
 
       - name: Setup go version
-        uses: actions/setup-go@30b9ddff1180797dbf0efc06837929f98bdf7af7
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ inputs.go-version }}
           check-latest: ${{ inputs.go-version-latest }}
@@ -301,7 +301,7 @@ jobs:
       #    git config --global url."https://${{ secrets.REPO_FETCHING_TOKEN }}:x-oauth-basic@github.com".insteadOf "https://github.com"
 
       - name: Setup go version
-        uses: actions/setup-go@30b9ddff1180797dbf0efc06837929f98bdf7af7
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ inputs.go-version }}
           check-latest: ${{ inputs.go-version-latest }}
@@ -339,7 +339,7 @@ jobs:
       #    git config --global url."https://${{ secrets.REPO_FETCHING_TOKEN }}:x-oauth-basic@github.com".insteadOf "https://github.com"
 
       - name: Setup Go
-        uses: actions/setup-go@30b9ddff1180797dbf0efc06837929f98bdf7af7
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ inputs.go-version }}
           check-latest: ${{ inputs.go-version-latest }}
@@ -376,7 +376,7 @@ jobs:
       #    git config --global url."https://${{ secrets.REPO_FETCHING_TOKEN }}:x-oauth-basic@github.com".insteadOf "https://github.com"
 
       - name: Setup Go
-        uses: actions/setup-go@30b9ddff1180797dbf0efc06837929f98bdf7af7
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ inputs.go-version }}
           check-latest: ${{ inputs.go-version-latest }}
