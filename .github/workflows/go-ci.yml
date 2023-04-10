@@ -448,7 +448,7 @@ jobs:
         run: |
           # Check for a dockerfile
           if [ -f ${{ inputs.docker-directory }}/${{ inputs.docker-file}} ]; then
-            echo "::set-output name=docker_file_present::true"
+            echo "docker_file_present=true" >> $GITHUB_ENV
 
             docker build ${{ inputs.docker-directory }} -f ${{ inputs.docker-file }} \
               --tag ghcr.io/${{ github.repository }}:latest \
@@ -518,7 +518,7 @@ jobs:
         id: check_for_release
         if:  steps.bundle.outputs.release-tag != ''
         run: |
-          echo "::set-output name=value::true"
+          echo "value=true" >> $GITHUB_ENV
 
   docker:
     needs: [ release, docker_check ]
