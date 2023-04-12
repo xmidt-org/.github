@@ -21,7 +21,7 @@ on:
 
 jobs:
   dependabot:
-    runs-on: [ comcast-runner ]
+    runs-on: [ ubuntu-latest ]
     # Checking the actor will prevent your Action run failing on non-Dependabot
     # PRs but also ensures that it only does work for Dependabot PRs.
     if: ${{ github.actor == 'dependabot[bot]' }}
