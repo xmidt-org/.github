@@ -159,10 +159,15 @@ jobs:
           echo "sonar.cfamily.cache.enabled=false"                        >> .sonar-project.properties
           echo "sonar.coverageReportPaths=build/meson-logs/sonarqube.xml" >> .sonar-project.properties
 
-      - name: Build
+      - name: Build with Sonarcloud
+        if: inputs.sonarcloud-skip != 'true'
         working-directory: build
         run: |
-          build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output ninja all
+          wrapper='build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output'
+          if [ "{{ inputs.sonarcloud-skip }}" = "true" ]; then
+            wrapper=''
+          }
+          $wrapper ninja all
 
       - name: Run Tests
         working-directory: build
