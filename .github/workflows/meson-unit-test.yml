@@ -28,6 +28,11 @@ on:
         type: string
         required: false
         default: 'macos-latest'
+      sonarcloud-skip:
+        description: 'Skip uploading to sonarcloud.'
+        type: string
+        required: false
+        default: false
 
     secrets:
       sonar_login:
@@ -120,11 +125,13 @@ jobs:
           meson setup --warnlevel 3 --werror build
 
       - name: Get Sonarcloud Binaries
+        if: inputs.sonarcloud-skip != true
         uses: xmidt-org/sonarcloud-installer-action@v1
         with:
           working-directory: build
 
       - name: Update .sonar-project.properties
+        if: inputs.sonarcloud-skip != true
         run: |
           # Warn if we find something that shouldn't be in the sonar file.
           if [[ -n `grep ".*sonar.cfamily.build-wrapper-output.*" .sonar-project.properties` ]]; then
@@ -168,6 +175,7 @@ jobs:
           ninja coverage
 
       - name: Upload SonarCloud
+        if: inputs.sonarcloud-skip != true
         run: |
           build/sonar-scanner/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io \
                                                 -Dproject.settings=.sonar-project.properties \
