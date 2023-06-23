@@ -66,7 +66,7 @@ jobs:
       - name: Run Tests
         working-directory: build
         run: |
-          ninja tex45
+          ninja test
 
   test-linux-clang:
     name: Unit Tests (Linux clang)
