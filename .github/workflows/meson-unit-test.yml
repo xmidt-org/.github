@@ -18,6 +18,17 @@ on:
         description: 'The optional list of brew (MacOS) packages to install prior to building.'
         type: string
         required: false
+      runner-ubuntu:
+        description: 'The ubuntu runner to use.'
+        type: string
+        required: false
+        default: 'ubuntu-latest'
+      runner-macos:
+        description: 'The ubuntu runner to use.'
+        type: string
+        required: false
+        default: 'macos-latest'
+
     secrets:
       sonar_login:
         description: 'The sonarcloud login token.'
@@ -26,9 +37,9 @@ on:
 jobs:
   test-macos:
     name: Unit Tests (MacOS)
-    runs-on: [ macos-latest ]
+    runs-on: ${{ inputs.runner-macos }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
 
       - name: Install packages
         run: |
@@ -50,13 +61,13 @@ jobs:
       - name: Run Tests
         working-directory: build
         run: |
-          ninja test
+          ninja tex45
 
   test-linux-clang:
     name: Unit Tests (Linux clang)
-    runs-on: [ ubuntu-latest ]
+    runs-on: ${{ inputs.runner-ubuntu }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
 
       - name: Install packages
         run: |
@@ -86,9 +97,9 @@ jobs:
 
   test-linux-gcc:
     name: Unit Tests (Linux gcc)
-    runs-on: [ ubuntu-latest ]
+    runs-on: ${{ inputs.runner-ubuntu }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 0
 
@@ -166,7 +177,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Upload Codecov.io
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
         with:
           directory: .
           files: build/meson-logs/coverage.xml
