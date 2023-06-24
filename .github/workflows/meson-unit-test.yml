@@ -23,6 +23,11 @@ on:
         type: string
         required: false
         default: false
+      macos-skip:
+        description: 'The ubuntu runner to use.'
+        type: string
+        required: false
+        default: false
       runner-ubuntu:
         description: 'The ubuntu runner to use.'
         type: string
@@ -47,6 +52,7 @@ on:
 jobs:
   test-macos:
     name: Unit Tests (MacOS)
+    if: inputs.macos-skip != 'false'
     runs-on: ${{ inputs.runner-macos }}
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
@@ -61,9 +67,9 @@ jobs:
           #brew upgrade openssl
           #brew link --force openssl
           #pkg-config --modversion openssl
-          echo "LDFLAGS=\"-L/usr/local/opt/openssl@3/lib\""                 >> GITHUB_ENV
-          echo "CPPFLAGS=\"-I/usr/local/opt/openssl@3/include\""            >> GITHUB_ENV
-          echo "PKG_CONFIG_PATH=\"/usr/local/opt/openssl@3/lib/pkgconfig\"" >> GITHUB_ENV
+          echo "LDFLAGS=\"-L/usr/local/opt/openssl@3/lib\""                 >> $GITHUB_ENV
+          echo "CPPFLAGS=\"-I/usr/local/opt/openssl@3/include\""            >> $GITHUB_ENV
+          echo "PKG_CONFIG_PATH=\"/usr/local/opt/openssl@3/lib/pkgconfig\"" >> $GITHUB_ENV
 
       - name: Install Meson
         run: |
