@@ -56,7 +56,7 @@ jobs:
           brew install cunit ninja ${{ inputs.brew-packages }}
 
       - name: Fix openssl
-        if: inputs.macos-openssl-fix
+        if: inputs.macos-openssl-fix == 'true'
         run: |
           cd /usr/local/include
           ln -s ../opt/openssl/include/openssl .
