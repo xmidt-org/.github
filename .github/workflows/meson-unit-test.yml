@@ -60,7 +60,10 @@ jobs:
         run: |
           brew upgrade openssl
           brew link --force openssl
-          pkg-config --modversion openss
+          pkg-config --modversion openssl
+          echo "LDFLAGS=\"-L/usr/local/opt/openssl@3/lib\""                 >> GITHUB_ENV
+          echo "CPPFLAGS=\"-I/usr/local/opt/openssl@3/include\""            >> GITHUB_ENV
+          echo "PKG_CONFIG_PATH=\"/usr/local/opt/openssl@3/lib/pkgconfig\"" >> GITHUB_ENV
 
       - name: Install Meson
         run: |
