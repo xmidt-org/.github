@@ -24,20 +24,25 @@ on:
         required: false
         default: false
       macos-skip:
-        description: 'The ubuntu runner to use.'
+        description: 'Set if building for macOS should be skipped.'
         type: string
         required: false
         default: false
-      runner-ubuntu:
-        description: 'The ubuntu runner to use.'
+      meson-version:
+        description: 'The version of meson to use.'
         type: string
         required: false
-        default: 'ubuntu-latest'
+        default: '0.60.3'
       runner-macos:
         description: 'The ubuntu runner to use.'
         type: string
         required: false
         default: 'macos-latest'
+      runner-ubuntu:
+        description: 'The ubuntu runner to use.'
+        type: string
+        required: false
+        default: 'ubuntu-latest'
       sonarcloud-skip:
         description: 'Skip uploading to sonarcloud.'
         type: string
@@ -64,16 +69,17 @@ jobs:
       - name: Fix openssl
         if: inputs.macos-openssl-fix == 'true'
         run: |
-          #brew upgrade openssl
-          #brew link --force openssl
-          #pkg-config --modversion openssl
+          # To find out the environment variables I had to run these:
+          # brew upgrade openssl
+          # brew link --force openssl
+          # pkg-config --modversion openssl
           echo "LDFLAGS=\"-L/usr/local/opt/openssl@3/lib\""                 >> $GITHUB_ENV
           echo "CPPFLAGS=\"-I/usr/local/opt/openssl@3/include\""            >> $GITHUB_ENV
           echo "PKG_CONFIG_PATH=\"/usr/local/opt/openssl@3/lib/pkgconfig\"" >> $GITHUB_ENV
 
       - name: Install Meson
         run: |
-          pip3 install 'meson>=0.60.3'
+          pip3 install 'meson>={{ inputs.meson-version }}'
 
       - name: Meson Setup
         run: |
@@ -105,7 +111,7 @@ jobs:
 
       - name: Install Meson
         run: |
-          pip3 install --user 'meson>=0.60.3'
+          pip3 install --user 'meson>={{ inputs.meson-version }}'
 
       - name: Meson Setup
         run: |
@@ -139,7 +145,7 @@ jobs:
 
       - name: Install Meson
         run: |
-          pip3 install --user 'meson>=0.60.3'
+          pip3 install --user 'meson>={{ inputs.meson-version }}'
 
       - name: Meson Setup
         run: |
