@@ -58,8 +58,9 @@ jobs:
       - name: Fix openssl
         if: inputs.macos-openssl-fix == 'true'
         run: |
-          cd /usr/local/include
-          ln -s ../opt/openssl/include/openssl .
+          brew upgrade openssl
+          brew link --force openssl
+          pkg-config --modversion openss
 
       - name: Install Meson
         run: |
