@@ -79,7 +79,7 @@ jobs:
 
       - name: Install Meson
         run: |
-          pip3 install 'meson>={{ inputs.meson-version }}'
+          pip3 install 'meson>=${{ inputs.meson-version }}'
 
       - name: Meson Setup
         run: |
@@ -111,7 +111,7 @@ jobs:
 
       - name: Install Meson
         run: |
-          pip3 install --user 'meson>={{ inputs.meson-version }}'
+          pip3 install --user 'meson>=${{ inputs.meson-version }}'
 
       - name: Meson Setup
         run: |
@@ -145,7 +145,7 @@ jobs:
 
       - name: Install Meson
         run: |
-          pip3 install --user 'meson>={{ inputs.meson-version }}'
+          pip3 install --user 'meson>=${{ inputs.meson-version }}'
 
       - name: Meson Setup
         run: |
