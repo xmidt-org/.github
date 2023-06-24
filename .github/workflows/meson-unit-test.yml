@@ -18,6 +18,11 @@ on:
         description: 'The optional list of brew (MacOS) packages to install prior to building.'
         type: string
         required: false
+      macos-openssl-fix:
+        description: 'Fix macos and openssl not working well.'
+        type: string
+        required: false
+        deault: false
       runner-ubuntu:
         description: 'The ubuntu runner to use.'
         type: string
@@ -49,6 +54,12 @@ jobs:
       - name: Install packages
         run: |
           brew install cunit ninja ${{ inputs.brew-packages }}
+
+      - name: Fix openssl
+        if: inputs.macos-openssl-fix
+        run: |
+          cd /usr/local/include
+          ln -s ../opt/openssl/include/openssl .
 
       - name: Install Meson
         run: |
@@ -88,8 +99,7 @@ jobs:
 
       - name: Meson Setup
         run: |
-          # Until valgrind version 3.20+ force clang to use dwarf version 4.
-          CC=clang meson setup --warnlevel 3 --werror build -Dc_link_args='-gdwarf-4'
+          CC=clang meson setup --warnlevel 3 --werror build
 
       - name: Build
         working-directory: build
