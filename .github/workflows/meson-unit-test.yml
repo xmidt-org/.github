@@ -22,7 +22,7 @@ on:
         description: 'Fix macos and openssl not working well.'
         type: string
         required: false
-        deault: false
+        default: false
       runner-ubuntu:
         description: 'The ubuntu runner to use.'
         type: string
