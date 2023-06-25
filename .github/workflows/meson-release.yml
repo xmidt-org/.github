@@ -12,10 +12,9 @@ on:
         default: 'none'
 
     secrets:
-      release-token:
+      PERSONAL_ACCESS_TOKEN:
         description: 'The token to use for tagging the repo.'
         required: true
-
 
 jobs:
   release:
@@ -27,7 +26,7 @@ jobs:
         id: bundle
         uses: xmidt-org/release-builder-action@73b772198c6b8c6ea348baa2c4f43c5c7fcc16e6 # v3.0.2
         with:
-          gh-token: ${{ secrets.release-token }}
+          gh-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           meson-provides: ${{ inputs.meson-provides }}
 
       - name: Upload Release
@@ -39,4 +38,4 @@ jobs:
           prerelease: false
           bodyFile: ${{ steps.bundle.outputs.release-body-file }}
           artifacts: "${{ steps.bundle.outputs.artifact-dir }}/*"
-          token: ${{ github.release-token }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
