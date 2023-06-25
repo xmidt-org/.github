@@ -21,14 +21,12 @@ jobs:
     runs-on: [ ubuntu-latest ]
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
-        with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       - name: Generate Release Bundle
         id: bundle
         uses: xmidt-org/release-builder-action@73b772198c6b8c6ea348baa2c4f43c5c7fcc16e6 # v3.0.2
         with:
-          gh-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          gh-token: ${{ github.GITHUB_TOKEN }}
           meson-provides: ${{ inputs.meson-provides }}
 
       - name: Upload Release
@@ -40,4 +38,4 @@ jobs:
           prerelease: false
           bodyFile: ${{ steps.bundle.outputs.release-body-file }}
           artifacts: "${{ steps.bundle.outputs.artifact-dir }}/*"
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          token: ${{ github.GITHUB_TOKEN }}
