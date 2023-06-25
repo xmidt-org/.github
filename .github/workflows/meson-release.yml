@@ -11,6 +11,12 @@ on:
         type: string
         default: 'none'
 
+    secrets:
+      release-token:
+        description: 'The token to use for tagging the repo.'
+        required: true
+
+
 jobs:
   release:
     runs-on: [ ubuntu-latest ]
@@ -21,7 +27,7 @@ jobs:
         id: bundle
         uses: xmidt-org/release-builder-action@73b772198c6b8c6ea348baa2c4f43c5c7fcc16e6 # v3.0.2
         with:
-          gh-token: ${{ github.token }}
+          gh-token: ${{ secrets.release-token }}
           meson-provides: ${{ inputs.meson-provides }}
 
       - name: Upload Release
@@ -33,4 +39,4 @@ jobs:
           prerelease: false
           bodyFile: ${{ steps.bundle.outputs.release-body-file }}
           artifacts: "${{ steps.bundle.outputs.artifact-dir }}/*"
-          token: ${{ github.token }}
+          token: ${{ github.release-token }}
