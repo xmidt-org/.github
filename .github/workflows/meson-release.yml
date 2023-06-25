@@ -11,13 +11,11 @@ on:
         type: string
         default: 'none'
 
-    secrets:
-      PERSONAL_ACCESS_TOKEN:
-        description: 'The token to use for tagging the repo.'
-        required: true
-
 jobs:
   release:
+    permissions:
+      contents: write
+      packages: write
     runs-on: [ ubuntu-latest ]
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
@@ -26,7 +24,7 @@ jobs:
         id: bundle
         uses: xmidt-org/release-builder-action@73b772198c6b8c6ea348baa2c4f43c5c7fcc16e6 # v3.0.2
         with:
-          gh-token: ${{ github.GITHUB_TOKEN }}
+          gh-token: ${{ github.token }}
           meson-provides: ${{ inputs.meson-provides }}
 
       - name: Upload Release
@@ -38,4 +36,4 @@ jobs:
           prerelease: false
           bodyFile: ${{ steps.bundle.outputs.release-body-file }}
           artifacts: "${{ steps.bundle.outputs.artifact-dir }}/*"
-          token: ${{ github.GITHUB_TOKEN }}
+          token: ${{ github.token }}
