@@ -60,7 +60,7 @@ jobs:
     if: inputs.macos-skip != 'true'
     runs-on: ${{ inputs.runner-macos }}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - uses: actions/checkout@v4 # v3.5.3
 
       - name: Install packages
         run: |
@@ -99,7 +99,7 @@ jobs:
     name: Unit Tests (Linux clang)
     runs-on: ${{ inputs.runner-ubuntu }}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - uses: actions/checkout@v4 # v3.5.3
 
       - name: Install packages
         run: |
@@ -131,7 +131,7 @@ jobs:
     name: Unit Tests (Linux gcc)
     runs-on: ${{ inputs.runner-ubuntu }}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - uses: actions/checkout@v4 # v3.5.3
         with:
           fetch-depth: 0
 
