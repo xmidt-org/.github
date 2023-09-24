@@ -44,6 +44,7 @@ reviewed:
     - github.com/kevinburke/ssh_config                                          # mit
     - github.com/klauspost/compress                                             # bsd-3-clause, apache-2.0, mit
     - github.com/klauspost/compress/**/*                                        # bsd-3-clause, apache-2.0, mit
+    - github.com/leodido/go-urn                                                 # mit           
     - github.com/magiconair/properties                                          # bsd-2-clause
     - github.com/Masterminds/sprig                                              # mit
     - github.com/mattn/go-runewidth                                             # mit
