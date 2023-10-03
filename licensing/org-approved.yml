@@ -24,7 +24,8 @@ reviewed:
     - github.com/emirpasic/gods/**/*                                            # bsd-2-clause, mit
     - github.com/emperror/emperror                                              # mit
     - github.com/fsnotify/fsnotify                                              # bsd-3-clause
-    - github.com/gocql/gocql/internal                                           # bsd-3-clause
+    - github.com/gocql/gocql                                                    # bsd-3-clause
+    - github.com/gocql/gocql/**/*                                               # bsd-3-clause
     - github.com/gofrs/flock                                                    # bsd-3-clause
     - github.com/gofrs/uuid                                                     # mit
     - github.com/gogo/protobuf/**/*                                             # bsd-3-clause
