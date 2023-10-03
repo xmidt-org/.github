@@ -24,6 +24,7 @@ reviewed:
     - github.com/emirpasic/gods/**/*                                            # bsd-2-clause, mit
     - github.com/emperror/emperror                                              # mit
     - github.com/fsnotify/fsnotify                                              # bsd-3-clause
+    - github.com/gocql/gocql/internal                                           # bsd-3-clause
     - github.com/gofrs/flock                                                    # bsd-3-clause
     - github.com/gofrs/uuid                                                     # mit
     - github.com/gogo/protobuf/**/*                                             # bsd-3-clause
@@ -77,6 +78,7 @@ reviewed:
     - gopkg.in/src-d/go-git.v4/**/*                                             # apache-2.0
     - gopkg.in/warnings.v0                                                      # bsd-2-clause
     - gopkg.in/yaml.v2                                                          # apache-2.0
+    - gopkg.in/inf.v0                                                           # bsd-3-clause
     - go.uber.org/atomic                                                        # mit
     - go.uber.org/dig                                                           # mit
     - go.uber.org/dig/**/*                                                      # mit
