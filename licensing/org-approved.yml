@@ -55,17 +55,17 @@ reviewed:
     - github.com/mitchellh/mapstructure                                         # mit
     - github.com/opentracing/basictracer-go                                     # apache-2.0
     - github.com/pmezard/go-difflib                                             # bsd-3-clause
-    - github.com/pmezard/go-difflib/**/*  
-    - github.com/sagikazarmark/slog-shim                                      # bsd-3-clause
+    - github.com/pmezard/go-difflib/**/*                                        # bsd-3-clause 
+    - github.com/sagikazarmark/slog-shim                                        # bsd-3-clause
     - github.com/src-d/gcfg                                                     # bsd-3-clause
     - github.com/src-d/gcfg/**/*                                                # bsd-3-clause
-    - github.com/subosito/gotenv
-    - github.com/texttheater/golang-levenshtein/levenshtein 
-    - github.com/tsenart/vegeta                                                 # mit                # mit
+    - github.com/subosito/gotenv                                                # mit
+    - github.com/texttheater/golang-levenshtein/levenshtein                     # mit
+    - github.com/tsenart/vegeta                                                 # mit
     - github.com/tweekmonster/luser                                             # mit
     - github.com/uber/jaeger-client-go                                          # apache-2.0
     - github.com/uber/jaeger-client-go/**/*                                     # apache-2.0
-    - github.com/uber/jaeger-lib/metrics                                     # apache-2.0
+    - github.com/uber/jaeger-lib/metrics                                        # apache-2.0
     - github.com/xanzy/ssh-agent                                                # apache-2.0
     - golang.org/x/*                                                            # bsd-3-clause
     - golang.org/x/**/*                                                         # bsd-3-clause
