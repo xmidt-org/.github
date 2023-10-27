@@ -62,6 +62,7 @@ reviewed:
     - github.com/subosito/gotenv                                                # mit
     - github.com/texttheater/golang-levenshtein/levenshtein                     # mit
     - github.com/tsenart/vegeta                                                 # mit
+    - github.com/tsenart/vegeta/*                                               # mit                                 
     - github.com/tweekmonster/luser                                             # mit
     - github.com/uber/jaeger-client-go                                          # apache-2.0
     - github.com/uber/jaeger-client-go/**/*                                     # apache-2.0
