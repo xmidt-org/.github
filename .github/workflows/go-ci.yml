@@ -166,7 +166,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup go version
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ inputs.go-version }}
           check-latest: ${{ inputs.go-version-latest }}
@@ -192,7 +192,7 @@ jobs:
       #    git config --global url."https://${{ secrets.REPO_FETCHING_TOKEN }}:x-oauth-basic@github.com".insteadOf "https://github.com"
 
       - name: Setup go version
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ inputs.go-version }}
           check-latest: ${{ inputs.go-version-latest }}
@@ -301,7 +301,7 @@ jobs:
       #    git config --global url."https://${{ secrets.REPO_FETCHING_TOKEN }}:x-oauth-basic@github.com".insteadOf "https://github.com"
 
       - name: Setup go version
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ inputs.go-version }}
           check-latest: ${{ inputs.go-version-latest }}
@@ -339,7 +339,7 @@ jobs:
       #    git config --global url."https://${{ secrets.REPO_FETCHING_TOKEN }}:x-oauth-basic@github.com".insteadOf "https://github.com"
 
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ inputs.go-version }}
           check-latest: ${{ inputs.go-version-latest }}
@@ -376,7 +376,7 @@ jobs:
       #    git config --global url."https://${{ secrets.REPO_FETCHING_TOKEN }}:x-oauth-basic@github.com".insteadOf "https://github.com"
 
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ inputs.go-version }}
           check-latest: ${{ inputs.go-version-latest }}
