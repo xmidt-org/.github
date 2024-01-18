@@ -404,7 +404,7 @@ jobs:
           yq eval-all '. as $item ireduce ({}; . *+  $item)' .licensed_local.yml .licensed_common.yml > .licensed.yml
 
       - name: Define the cache for the licenses
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .licenses
           key: ${{ runner.os }}-licenses-${{ hashFiles('**/*.yml') }}
