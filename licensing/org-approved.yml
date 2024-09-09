@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: 2023 Comcast Cable Communications Management, LLC
 # SPDX-License-Identifier: Apache-2.0
 # This is the org wide approved licenses and reviewed repos with exceptions
-
-# Please keep alphabetized 
+---
+# Please keep alphabetized
 allowed:
-  - mit 
+  - mit
   - apache-2.0
   - bsd-2-clause
   - bsd-3-clause
@@ -46,7 +46,7 @@ reviewed:
     - github.com/kevinburke/ssh_config                                          # mit
     - github.com/klauspost/compress                                             # bsd-3-clause, apache-2.0, mit
     - github.com/klauspost/compress/**/*                                        # bsd-3-clause, apache-2.0, mit
-    - github.com/leodido/go-urn                                                 # mit           
+    - github.com/leodido/go-urn                                                 # mit
     - github.com/magiconair/properties                                          # bsd-2-clause
     - github.com/Masterminds/sprig                                              # mit
     - github.com/mattn/go-runewidth                                             # mit
@@ -55,14 +55,14 @@ reviewed:
     - github.com/mitchellh/mapstructure                                         # mit
     - github.com/opentracing/basictracer-go                                     # apache-2.0
     - github.com/pmezard/go-difflib                                             # bsd-3-clause
-    - github.com/pmezard/go-difflib/**/*                                        # bsd-3-clause 
+    - github.com/pmezard/go-difflib/**/*                                        # bsd-3-clause
     - github.com/sagikazarmark/slog-shim                                        # bsd-3-clause
     - github.com/src-d/gcfg                                                     # bsd-3-clause
     - github.com/src-d/gcfg/**/*                                                # bsd-3-clause
     - github.com/subosito/gotenv                                                # mit
     - github.com/texttheater/golang-levenshtein/levenshtein                     # mit
     - github.com/tsenart/vegeta                                                 # mit
-    - github.com/tsenart/vegeta/*                                               # mit                                 
+    - github.com/tsenart/vegeta/*                                               # mit
     - github.com/tweekmonster/luser                                             # mit
     - github.com/uber/jaeger-client-go                                          # apache-2.0
     - github.com/uber/jaeger-client-go/**/*                                     # apache-2.0
