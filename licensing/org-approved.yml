@@ -53,6 +53,8 @@ reviewed:
     - github.com/miekg/dns                                                      # bsd-3-clause
     - github.com/mitchellh/go-homedir                                           # mit
     - github.com/mitchellh/mapstructure                                         # mit
+    - github.com/munnerz/goautoneg                                              # bsd-3-clause
+    - github.com/munnerz/goautoneg/**/*                                         # bsd-3-clause
     - github.com/opentracing/basictracer-go                                     # apache-2.0
     - github.com/pmezard/go-difflib                                             # bsd-3-clause
     - github.com/pmezard/go-difflib/**/*                                        # bsd-3-clause
