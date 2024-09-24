@@ -58,6 +58,7 @@ reviewed:
     - github.com/opentracing/basictracer-go                                     # apache-2.0
     - github.com/pmezard/go-difflib                                             # bsd-3-clause
     - github.com/pmezard/go-difflib/**/*                                        # bsd-3-clause
+    - github.com/rcrowley/go-metrics                                            # bsd-2-clause
     - github.com/sagikazarmark/slog-shim                                        # bsd-3-clause
     - github.com/src-d/gcfg                                                     # bsd-3-clause
     - github.com/src-d/gcfg/**/*                                                # bsd-3-clause
