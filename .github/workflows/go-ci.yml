@@ -206,7 +206,7 @@ jobs:
           go test ${{ inputs.tests-race && '-race' || '' }} -json > report.json ./...
 
       - name: Send results to codecov.io
-        uses: codecov/codecov-action@v4.6.0
+        uses: codecov/codecov-action@v5.0.0
         with:
           directory: ${{ inputs.working-directory }}
           flags:     unittests
