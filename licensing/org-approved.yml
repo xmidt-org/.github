@@ -64,6 +64,7 @@ reviewed:
     - github.com/src-d/gcfg/**/*                                                # bsd-3-clause
     - github.com/subosito/gotenv                                                # mit
     - github.com/texttheater/golang-levenshtein/levenshtein                     # mit
+    - github.com/tinylib/msgp/msgp                                              # mit
     - github.com/tsenart/vegeta                                                 # mit
     - github.com/tsenart/vegeta/*                                               # mit
     - github.com/tweekmonster/luser                                             # mit
