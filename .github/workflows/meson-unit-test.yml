@@ -22,12 +22,12 @@ on:
         description: 'Fix macos and openssl not working well.'
         type: string
         required: false
-        default: false
+        default: 'false'
       macos-skip:
         description: 'Set if building for macOS should be skipped.'
         type: string
         required: false
-        default: false
+        default: 'false'
       meson-version:
         description: 'The version of meson to use.'
         type: string
@@ -47,11 +47,14 @@ on:
         description: 'Skip uploading to sonarcloud.'
         type: string
         required: false
-        default: false
+        default: 'false'
 
     secrets:
       sonar_login:
         description: 'The sonarcloud login token.'
+        required: true
+      codecov_token:
+        description: 'The codecov.io token.'
         required: true
 
 jobs:
@@ -222,3 +225,4 @@ jobs:
           directory: .
           files: build/meson-logs/coverage.xml
           fail_ci_if_error: true
+          token: ${{ secrets.codecov_token }}
