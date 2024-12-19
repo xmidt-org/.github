@@ -22,7 +22,7 @@ jobs:
 
       - name: Generate Release Bundle
         id: bundle
-        uses: xmidt-org/release-builder-action@73b772198c6b8c6ea348baa2c4f43c5c7fcc16e6 # v3.0.2
+        uses: xmidt-org/release-builder-action@main #73b772198c6b8c6ea348baa2c4f43c5c7fcc16e6 # v3.0.2
         with:
           gh-token: ${{ github.token }}
           meson-provides: ${{ inputs.meson-provides }}
