@@ -34,6 +34,6 @@ jobs:
             echo "Using the repo code format."
           fi
 
-      - uses: DoozyX/clang-format-lint-action@v0.18
+      - uses: DoozyX/clang-format-lint-action@v0.20
         with:
           clangFormatVersion: 13
