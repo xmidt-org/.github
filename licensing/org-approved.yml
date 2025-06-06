@@ -16,6 +16,8 @@ allowed:
 reviewed:
   go:
     - emperror.dev/errors                                                       # mit
+    - github.com/aws/aws-sdk-go-v2/internal/sync/singleflight                   # bsd-3-clause
+    - github.com/aws/smithy-go/internal/sync/singleflight                       # bsd-3-clause
     - github.com/bgentry/speakeasy                                              # mit, apache-2.0 (windows)
     - github.com/blang/semver                                                   # mit
     - github.com/cheggaaa/pb                                                    # bsd-3-clause
