@@ -16,7 +16,7 @@ jobs:
     runs-on: [ ubuntu-latest ]
     steps: 
       - name: Checkout the code
-        uses: actions/checkout@v4 # v3.4.0
+        uses: actions/checkout@v5 # v3.4.0
 
       - name: REUSE Compliance Check
         uses: fsfe/reuse-action@bb774aa972c2a89ff34781233d275075cbddf542 # v5
