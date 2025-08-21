@@ -216,7 +216,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Upload Codecov.io
-        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v4.6.0
+        uses: codecov/codecov-action@3cb13a12348ef4ffcf9783ac0f74954f92113e33 # v4.6.0
         with:
           directory: .
           files: build/meson-logs/coverage.xml
