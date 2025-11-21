@@ -39,7 +39,7 @@ jobs:
     name: Rebuild Docker Image For Existing Release
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.release-tag }}
 
