@@ -213,7 +213,7 @@ jobs:
 
       # upload report as artifact
       - name: Archive unit tests report
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: report
           path: report.json
@@ -221,7 +221,7 @@ jobs:
 
       # upload coverage as artifact
       - name: Archive code coverage results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: coverage
           path: coverage.txt
@@ -318,7 +318,7 @@ jobs:
           fi
 
       - name: Archive code coverage results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: fmt
           path: ${{ inputs.working-directory }}/fmt.patch
@@ -424,7 +424,7 @@ jobs:
 
       - name: Archive license results
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: licensing
           path: |
