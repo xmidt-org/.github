@@ -93,5 +93,7 @@ reviewed:
     - go.uber.org/dig                                                           # mit
     - go.uber.org/dig/**/*                                                      # mit
     - go.uber.org/fx                                                            # mit
+    - go.yaml.in/yaml/v2                                                        # apache-2.0
+    - go.yaml.in/yaml/v3                                                        # apache-2.0
     - sourcegraph.com/sourcegraph/appdash                                       # mit
     - sourcegraph.com/sourcegraph/appdash/**/*                                  # mit
